@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QuickBus - Online Bus Ticket Booking</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>🚌 QuickBus</h1>
+  <nav>
+    <button data-go="home" data-for="guest,user,admin">Search Buses</button>
+    <button data-go="login" data-for="guest">Login</button>
+    <button data-go="register" data-for="guest">Register</button>
+    <button data-go="dash" data-for="user,admin">Dashboard</button>
+    <button id="logout" data-for="user,admin">Logout</button>
+  </nav>
+</header>
+
+<main>
+  <!-- HOME -->
+  <section class="view" id="v-home">
+    <div class="hero"><h2>Book bus tickets online</h2><p>Demo logins: <b>admin@bus.com / admin123</b> · <b>user@bus.com / user123</b></p></div>
+    <div class="card" id="newsBox"></div>
+    <div class="card">
+      <h3>Search buses</h3>
+      <form id="searchForm">
+        <div class="row">
+          <div><label>From</label><select id="sFrom" required></select></div>
+          <div><label>To</label><select id="sTo" required></select></div>
+          <div><label>Date</label><input type="date" id="sDate" required></div>
+          <div><label>Time</label><select id="sTime"><option value="">Any time</option><option value="m">Morning (5am-12pm)</option><option value="a">Afternoon (12-5pm)</option><option value="e">Evening (5-9pm)</option><option value="n">Night (9pm-5am)</option></select></div>
+          <div style="flex:0 0 auto"><button class="btn">Search</button></div>
+        </div>
+      </form>
+    </div>
+    <div id="results"></div>
+  </section>
+
+  <!-- LOGIN -->
+  <section class="view hidden" id="v-login">
+    <div class="card narrow"><h2>Login</h2>
+      <form id="loginForm">
+        <div><label>Email</label><input type="email" id="lEmail" required></div>
+        <div><label>Password</label><input type="password" id="lPass" required></div>
+        <button class="btn">Login</button>
+        <p class="mut"><a href="#" data-go="forgot">Forgot password?</a> · <a href="#" data-go="register">Register</a></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- FORGOT PASSWORD -->
+  <section class="view hidden" id="v-forgot">
+    <div class="card narrow"><h2>Forgot password</h2>
+      <form id="forgotForm">
+        <div><label>Registered email</label><input type="email" id="fEmail" required></div>
+        <div><label>Registered phone (for verification)</label><input id="fPhone" required></div>
+        <div><label>New password</label><input type="password" id="fPass" minlength="6" required></div>
+        <button class="btn">Reset password</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section class="view hidden" id="v-register">
+    <div class="card narrow"><h2>Register</h2>
+      <form id="regForm">
+        <div><label>Full name</label><input id="rName" required></div>
+        <div><label>Email</label><input type="email" id="rEmail" required></div>
+        <div><label>Phone</label><input id="rPhone" pattern="[0-9]{10}" placeholder="10 digits" required></div>
+        <div><label>Password (min 6)</label><input type="password" id="rPass" minlength="6" required></div>
+        <button class="btn">Create account</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- BOOK -->
+  <section class="view hidden" id="v-book">
+    <div class="card">
+      <h2>Select seats</h2>
+      <div id="bookInfo" class="ticket"></div>
+      <p class="mut" style="text-align:center">⬜ Available &nbsp; 🟦 Selected &nbsp; ⬛ Booked (max 6 seats)</p>
+      <div class="seats" id="seatMap"></div>
+      <form id="bookForm">
+        <div id="paxList"></div>
+        <div class="row">
+          <div><label>Contact phone</label><input id="bPhone" pattern="[0-9]{10}" required></div>
+          <div><label>Contact email</label><input type="email" id="bEmail" required></div>
+          <div><label>Payment method</label><select id="bPay"><option>UPI</option><option>Credit / Debit card</option><option>Net banking</option></select></div>
+        </div>
+        <p><b>Total: <span class="price" id="bTotal">₹0</span></b></p>
+        <button class="btn">Pay &amp; book</button>
+        <button type="button" class="btn sec" data-go="home">Back</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- USER DASHBOARD -->
+  <section class="view hidden" id="v-user">
+    <h2>Hello, <span id="uName"></span></h2>
+    <div class="tabs"><button data-tab="u-tix" class="active">My bookings</button><button data-tab="u-pw">Change password</button></div>
+    <div class="tab" id="u-tix"><div id="userTickets"></div></div>
+    <div class="tab hidden" id="u-pw"><div class="card narrow"><form id="pwForm">
+      <div><label>Current password</label><input type="password" id="pwOld" required></div>
+      <div><label>New password</label><input type="password" id="pwNew" minlength="6" required></div>
+      <button class="btn">Update password</button></form></div></div>
+  </section>
+
+  <!-- ADMIN -->
+  <section class="view hidden" id="v-admin">
+    <h2>Admin panel</h2>
+    <div class="tabs">
+      <button data-tab="a-bus" class="active">Buses</button><button data-tab="a-cat">Categories</button><button data-tab="a-bk">Bookings</button>
+      <button data-tab="a-usr">Users</button><button data-tab="a-cm">Comments</button><button data-tab="a-news">News</button><button data-tab="a-rep">Report</button>
+    </div>
+
+    <div class="tab" id="a-bus">
+      <div class="card"><h3 id="busFormTitle">Add bus</h3>
+        <form id="busForm"><input type="hidden" id="bId">
+          <div class="row">
+            <div><label>Bus name</label><input id="bName" required></div>
+            <div><label>Category</label><select id="bCat"></select></div>
+            <div><label>From</label><input id="bFrom" required></div>
+            <div><label>To</label><input id="bTo" required></div>
+          </div>
+          <div class="row">
+            <div><label>Departure time</label><input type="time" id="bTime" required></div>
+            <div><label>Fare (₹)</label><input type="number" id="bFare" min="1" required></div>
+            <div><label>Total seats</label><input type="number" id="bSeats" min="4" max="60" value="40" required></div>
+            <div><label>Tour location / route area</label><input id="bLoc"></div>
+          </div>
+          <div class="row"><div><label>Photo URL (optional)</label><input id="bPhoto" placeholder="https://..."></div><div><label>Description</label><input id="bDesc"></div></div>
+          <button class="btn">Save bus</button> <button type="button" class="btn sec" id="busClear">Clear</button>
+        </form>
+      </div>
+      <div class="card table-wrap"><table><thead><tr><th>Bus</th><th>Category</th><th>Route</th><th>Time</th><th>Fare</th><th>Seats</th><th></th></tr></thead><tbody id="adminBuses"></tbody></table></div>
+    </div>
+
+    <div class="tab hidden" id="a-cat">
+      <div class="card"><form id="catForm" class="row"><div><label>New category (e.g. Volvo, Sleeper coach)</label><input id="catName" required></div><div style="flex:0 0 auto"><button class="btn">Add category</button></div></form></div>
+      <div class="card" id="catList"></div>
+    </div>
+    <div class="tab hidden" id="a-bk"><div class="card table-wrap"><table><thead><tr><th>ID</th><th>User</th><th>Bus</th><th>Date</th><th>Seats</th><th>Amount</th><th>Status</th></tr></thead><tbody id="adminBookings"></tbody></table></div></div>
+    <div class="tab hidden" id="a-usr"><div class="card table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th></th></tr></thead><tbody id="adminUsers"></tbody></table></div></div>
+    <div class="tab hidden" id="a-cm"><div class="card table-wrap"><table><thead><tr><th>Bus</th><th>User</th><th>Comment</th><th></th></tr></thead><tbody id="adminComments"></tbody></table></div></div>
+    <div class="tab hidden" id="a-news">
+      <div class="card"><form id="newsForm" class="row"><div style="flex:3 1 250px"><label>News / announcement</label><input id="newsText" required></div><div style="flex:0 0 auto"><button class="btn">Post news</button></div></form></div>
+      <div class="card" id="newsList"></div>
+    </div>
+    <div class="tab hidden" id="a-rep">
+      <div class="grid" id="repStats"></div><br>
+      <div class="card table-wrap"><h3>Bus-wise report</h3><table><thead><tr><th>Bus</th><th>Confirmed bookings</th><th>Seats sold</th><th>Revenue</th></tr></thead><tbody id="repTable"></tbody></table><br><button class="btn noprint" onclick="window.print()">Print report</button></div>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlg"><div id="dlgBody"></div><form method="dialog" style="margin-top:12px"><button class="btn sec">Close</button></form></dialog>
+<div id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MedCare - Hospital Appointment Booking</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>🏥 MedCare</h1>
+  <nav>
+    <button data-go="home" data-for="guest,user,admin,hospital">Find Hospitals</button>
+    <button data-go="login" data-for="guest">Login</button>
+    <button data-go="register" data-for="guest">Register</button>
+    <button data-go="dash" data-for="user,admin,hospital">Dashboard</button>
+    <button id="logout" data-for="user,admin,hospital">Logout</button>
+  </nav>
+</header>
+
+<main>
+  <!-- HOME / SEARCH -->
+  <section class="view" id="v-home">
+    <div class="hero"><h2>Book a doctor appointment near you</h2>
+      <p>Demo logins: <b>patient@med.com / patient123</b> · <b>hospital@med.com / hosp123</b> · <b>admin@med.com / admin123</b></p></div>
+    <div class="card">
+      <div class="row">
+        <div style="flex:2 1 220px"><label>Search location (city / area)</label><input id="qLoc" placeholder="e.g. Chennai, Adyar, Bangalore"></div>
+        <div><label>Specialty</label><select id="qSpec"></select></div>
+        <div style="flex:2 1 200px"><label>Hospital / doctor name</label><input id="qName" placeholder="Search by name"></div>
+        <div style="flex:0 0 auto"><button class="btn sec" id="nearMe" type="button">📍 Near me</button></div>
+      </div>
+    </div>
+    <h2>Hospitals</h2><div class="grid" id="hospGrid"></div><br>
+    <h2>Doctors</h2><div class="grid" id="docGrid"></div>
+  </section>
+
+  <!-- LOGIN -->
+  <section class="view hidden" id="v-login">
+    <div class="card narrow"><h2>Login (Patient / Hospital / Admin)</h2>
+      <form id="loginForm">
+        <div><label>Email</label><input type="email" id="lEmail" required></div>
+        <div><label>Password</label><input type="password" id="lPass" required></div>
+        <button class="btn">Login</button>
+        <p class="mut">New here? <a href="#" data-go="register">Register</a></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section class="view hidden" id="v-register">
+    <div class="card narrow"><h2>Registration</h2>
+      <form id="regForm">
+        <div><label>I am registering as</label><select id="rRole"><option value="user">Patient</option><option value="hospital">Hospital</option></select></div>
+        <div><label id="rNameLbl">Full name</label><input id="rName" required></div>
+        <div><label>Email</label><input type="email" id="rEmail" required></div>
+        <div><label>Phone</label><input id="rPhone" pattern="[0-9]{10}" required></div>
+        <div id="hospFields" class="hidden">
+          <div><label>Hospital name</label><input id="rHName"></div>
+          <div class="row"><div><label>City</label><input id="rHCity"></div><div><label>Area</label><input id="rHArea"></div></div>
+          <div><label>Address</label><input id="rHAddr"></div>
+        </div>
+        <div><label>Password (min 6)</label><input type="password" id="rPass" minlength="6" required></div>
+        <button class="btn">Register</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- BOOK -->
+  <section class="view hidden" id="v-book">
+    <div class="card narrow">
+      <h2>Book appointment</h2>
+      <form id="bookForm">
+        <div><label>Hospital</label><select id="bHosp" required></select></div>
+        <div><label>Doctor</label><select id="bDoc" required></select></div>
+        <div id="bDocInfo" class="mut"></div>
+        <div><label>Date</label><input type="date" id="bDate" required></div>
+        <label>Time slot (greyed out = booked)</label><div class="slots" id="bSlots"></div>
+        <div><label>Patient name</label><input id="bName" required></div>
+        <div><label>Phone</label><input id="bPhone" pattern="[0-9]{10}" required></div>
+        <div><label>Reason for visit</label><textarea id="bReason" required></textarea></div>
+        <button class="btn">Confirm booking</button> <button type="button" class="btn sec" data-go="home">Back</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- PATIENT DASHBOARD -->
+  <section class="view hidden" id="v-user">
+    <h2>Hello, <span id="uName"></span></h2>
+    <div id="reminder"></div>
+    <div class="tabs"><button data-tab="u-up" class="active">My appointments</button><button data-tab="u-hist">Past appointments</button><button data-tab="u-prof">My details</button></div>
+    <div class="tab" id="u-up"><div class="card table-wrap"><table><thead><tr><th>ID</th><th>Hospital / doctor</th><th>When</th><th>Status</th><th>Action</th></tr></thead><tbody id="upList"></tbody></table></div></div>
+    <div class="tab hidden" id="u-hist"><div class="card table-wrap"><table><thead><tr><th>ID</th><th>Hospital / doctor</th><th>When</th><th>Status</th><th>Check-in details</th><th>Review</th></tr></thead><tbody id="histList"></tbody></table></div></div>
+    <div class="tab hidden" id="u-prof"><div class="card narrow"><form id="profForm">
+      <div><label>Name</label><input id="pName" required></div><div><label>Email</label><input id="pEmail" disabled></div>
+      <div><label>Phone</label><input id="pPhone" pattern="[0-9]{10}" required></div>
+      <div class="row"><div><label>Age</label><input type="number" id="pAge" min="0" max="120"></div><div><label>Blood group</label><select id="pBlood"><option value="">-</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div></div>
+      <div><label>New password (optional)</label><input type="password" id="pPass" minlength="6"></div><button class="btn">Update details</button></form></div></div>
+  </section>
+
+  <!-- HOSPITAL / ADMIN PANEL -->
+  <section class="view hidden" id="v-admin">
+    <h2 id="admTitle">Panel</h2>
+    <div class="card row" id="admScope"><div><label>Hospital</label><select id="admH"></select></div></div>
+    <div class="tabs" id="admTabs">
+      <button data-tab="a-det" class="active" data-only="hospital">Hospital details &amp; location</button>
+      <button data-tab="a-ap" data-only="">Appointments</button>
+      <button data-tab="a-doc">Doctors</button>
+      <button data-tab="a-stat" data-only="admin">Statistics</button>
+      <button data-tab="a-rate">Ratings</button>
+    </div>
+
+    <div class="tab" id="a-det"><div class="card"><form id="hospForm">
+      <div class="row"><div><label>Hospital name</label><input id="hName" required></div><div><label>Phone</label><input id="hPhone" required></div></div>
+      <div class="row"><div><label>City</label><input id="hCity" required></div><div><label>Area</label><input id="hArea" required></div></div>
+      <div><label>Address</label><input id="hAddr" required></div>
+      <div><label>About / facilities</label><textarea id="hAbout"></textarea></div>
+      <h3>Location</h3>
+      <div class="row"><div><label>Latitude</label><input id="hLat" type="number" step="any"></div><div><label>Longitude</label><input id="hLng" type="number" step="any"></div><div style="flex:0 0 auto"><button type="button" class="btn sec" id="hGeo">📍 Use my current location</button></div></div>
+      <button class="btn">Save details &amp; location</button></form></div></div>
+
+    <div class="tab hidden" id="a-ap"><div class="card table-wrap"><table><thead><tr><th>ID</th><th>Patient</th><th>Doctor</th><th>When</th><th>Reason / check-in</th><th>Status</th><th>Action</th></tr></thead><tbody id="apAdmin"></tbody></table></div></div>
+
+    <div class="tab hidden" id="a-doc">
+      <div class="card"><h3 id="docTitle">Add doctor</h3><form id="docForm"><input type="hidden" id="dId">
+        <div class="row"><div><label>Doctor name</label><input id="dName" required></div><div><label>Specialty</label><input id="dSpec" list="specList" required></div><div><label>Experience (yrs)</label><input type="number" id="dExp" min="0" value="5"></div><div><label>Fee ₹</label><input type="number" id="dFee" min="0" value="500"></div></div>
+        <datalist id="specList"><option>General Medicine</option><option>Cardiology</option><option>Dermatology</option><option>Pediatrics</option><option>Orthopedics</option><option>ENT</option><option>Gynecology</option></datalist>
+        <button class="btn">Save doctor</button> <button type="button" class="btn sec" id="docClear">Clear</button></form></div>
+      <div class="card table-wrap"><table><thead><tr><th>Doctor</th><th>Specialty</th><th>Hospital</th><th>Exp</th><th>Fee</th><th></th></tr></thead><tbody id="docAdmin"></tbody></table></div>
+    </div>
+
+    <div class="tab hidden" id="a-stat"><div class="grid" id="statCards"></div><br><div class="card"><h3>Appointments per hospital</h3><div id="statBars"></div></div></div>
+    <div class="tab hidden" id="a-rate"><div class="card table-wrap"><table><thead><tr><th>Doctor</th><th>Hospital</th><th>Average</th><th>Reviews</th></tr></thead><tbody id="rateList"></tbody></table></div><div class="card" id="reviewList"></div></div>
+  </section>
+</main>
+
+<dialog id="dlg"><div id="dlgBody"></div><form method="dialog" style="margin-top:12px"><button class="btn sec">Close</button></form></dialog>
+<div id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>
