@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grand Stay Hotel - Room Booking</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>🏨 Grand Stay Hotel</h1>
+  <nav>
+    <button data-go="home" data-for="guest,user,admin">Home</button>
+    <button data-page="rooms" data-for="guest,user,admin">Rooms</button>
+    <button data-page="about" data-for="guest,user,admin">About</button>
+    <button data-page="travel" data-for="guest,user,admin">Travel Guide</button>
+    <button data-page="qa" data-for="guest,user,admin">Q&amp;A</button>
+    <button data-page="contact" data-for="guest,user,admin">Contact</button>
+    <button data-page="privacy" data-for="guest,user,admin">Privacy</button>
+    <button data-go="login" data-for="guest">Login</button>
+    <button data-go="register" data-for="guest">Register</button>
+    <button data-go="dash" data-for="user,admin">Dashboard</button>
+    <button id="logout" data-for="user,admin">Logout</button>
+  </nav>
+</header>
+
+<main>
+  <!-- HOME / AVAILABILITY -->
+  <section class="view" id="v-home">
+    <div class="hero"><h2>Book your perfect stay</h2><p>Check availability first, then book. Demo logins: <b>admin@hotel.com / admin123</b> and <b>guest@hotel.com / guest123</b>.</p></div>
+    <div class="card">
+      <h3>Check room availability</h3>
+      <form id="availForm">
+        <div class="row">
+          <div><label>Check-in</label><input type="date" id="aIn" required></div>
+          <div><label>Check-out</label><input type="date" id="aOut" required></div>
+          <div><label>Guests</label><input type="number" id="aGuests" min="1" max="12" value="2" required></div>
+          <div style="flex:0 0 auto"><button class="btn">Check availability</button></div>
+        </div>
+      </form>
+      <div id="availResult"></div>
+    </div>
+    <h2>Our rooms</h2>
+    <div class="grid" id="roomCards"></div>
+  </section>
+
+  <!-- STATIC PAGE -->
+  <section class="view hidden" id="v-page">
+    <div class="card"><h2 id="pageTitle"></h2><div id="pageBody"></div></div>
+  </section>
+
+  <!-- LOGIN -->
+  <section class="view hidden" id="v-login">
+    <div class="card narrow"><h2>Login</h2>
+      <form id="loginForm">
+        <div><label>Email</label><input type="email" id="lEmail" required></div>
+        <div><label>Password</label><input type="password" id="lPass" required></div>
+        <button class="btn">Login</button>
+        <p class="mut">No account? <a href="#" data-go="register">Register</a></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section class="view hidden" id="v-register">
+    <div class="card narrow"><h2>Register</h2>
+      <form id="regForm">
+        <div><label>Full name</label><input id="rName" required></div>
+        <div><label>Email</label><input type="email" id="rEmail" required></div>
+        <div><label>Phone</label><input id="rPhone" pattern="[0-9]{10}" placeholder="10 digits" required></div>
+        <div><label>Password (min 6)</label><input type="password" id="rPass" minlength="6" required></div>
+        <button class="btn">Create account</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- BOOKING FORM -->
+  <section class="view hidden" id="v-book">
+    <div class="card narrow">
+      <h2>Booking form</h2>
+      <div id="bookSummary" class="ticket"></div>
+      <form id="bookForm">
+        <div><label>Guest name</label><input id="bkName" required></div>
+        <div><label>Phone</label><input id="bkPhone" pattern="[0-9]{10}" required></div>
+        <div><label>Number of rooms</label><input type="number" id="bkRooms" min="1" value="1" required></div>
+        <div><label>Special requests (optional)</label><textarea id="bkNote"></textarea></div>
+        <h3>Payment (demo gateway)</h3>
+        <div><label>Card number (16 digits)</label><input id="bkCard" pattern="[0-9]{16}" maxlength="16" placeholder="1234123412341234" required></div>
+        <div class="row"><div><label>Expiry (MM/YY)</label><input id="bkExp" pattern="(0[1-9]|1[0-2])/[0-9]{2}" placeholder="08/29" required></div><div><label>CVV</label><input id="bkCvv" pattern="[0-9]{3}" maxlength="3" required></div></div>
+        <p><b>Total: <span id="bkTotal" class="price"></span></b></p>
+        <button class="btn">Pay &amp; confirm booking</button>
+        <button type="button" class="btn sec" data-go="home">Back</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- USER DASHBOARD -->
+  <section class="view hidden" id="v-user">
+    <h2>Hello, <span id="uName"></span></h2>
+    <div class="tabs"><button data-tab="u-book" class="active">My Bookings</button><button data-tab="u-prof">My Profile</button></div>
+    <div class="tab" id="u-book">
+      <p class="mut">You can change or cancel a booking up to 3 days before the arrival date.</p>
+      <div class="card table-wrap"><table><thead><tr><th>ID</th><th>Room</th><th>Dates</th><th>Rooms</th><th>Total</th><th>Status</th><th>Action</th></tr></thead><tbody id="userBookings"></tbody></table></div>
+    </div>
+    <div class="tab hidden" id="u-prof">
+      <div class="card narrow">
+        <form id="profForm">
+          <div><label>Name</label><input id="pName" required></div>
+          <div><label>Email</label><input id="pEmail" disabled></div>
+          <div><label>Phone</label><input id="pPhone" pattern="[0-9]{10}" required></div>
+          <div><label>New password (optional)</label><input type="password" id="pPass" minlength="6"></div>
+          <button class="btn">Save profile</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADMIN DASHBOARD -->
+  <section class="view hidden" id="v-admin">
+    <h2>Administrator panel</h2>
+    <div class="tabs"><button data-tab="a-rooms" class="active">Room quantity &amp; price</button><button data-tab="a-book">All bookings</button><button data-tab="a-pages">Edit pages</button></div>
+    <div class="tab" id="a-rooms"><div class="card table-wrap"><table><thead><tr><th>Room type</th><th>Quantity</th><th>Price / night (₹)</th><th></th></tr></thead><tbody id="adminRooms"></tbody></table></div></div>
+    <div class="tab hidden" id="a-book"><div class="card table-wrap"><table><thead><tr><th>ID</th><th>Guest</th><th>Room</th><th>Dates</th><th>Rooms</th><th>Total</th><th>Status</th><th>Action</th></tr></thead><tbody id="adminBookings"></tbody></table></div></div>
+    <div class="tab hidden" id="a-pages">
+      <div class="card">
+        <div class="row"><div><label>Choose page</label><select id="pgSelect"></select></div></div>
+        <div><label>Content</label><textarea id="pgText" style="min-height:200px"></textarea></div>
+        <br><button class="btn" id="pgSave">Save page</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlg"><div id="dlgBody"></div><form method="dialog" style="margin-top:12px"><button class="btn sec">Close</button></form></dialog>
+<div id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>

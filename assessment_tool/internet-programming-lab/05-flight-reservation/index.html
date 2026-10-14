@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SkyWings - Flight Reservation System</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>✈️ SkyWings</h1>
+  <nav>
+    <button data-go="home" data-for="guest,user,admin">Search Flight</button>
+    <button data-go="status" data-for="guest,user,admin">Booking Status</button>
+    <button data-go="login" data-for="guest">Login</button>
+    <button data-go="register" data-for="guest">Register</button>
+    <button data-go="dash" data-for="user,admin">Dashboard</button>
+    <button id="logout" data-for="user,admin">Logout</button>
+  </nav>
+</header>
+
+<main>
+  <!-- SEARCH FLIGHT PAGE -->
+  <section class="view" id="v-home">
+    <div class="hero"><h2>Find your flight</h2><p>Demo logins: <b>admin@sky.com / admin123</b> · <b>user@sky.com / user123</b></p></div>
+    <div class="card">
+      <form id="searchForm">
+        <div class="row">
+          <div><label>From</label><select id="sFrom" required></select></div>
+          <div><label>Destination</label><select id="sTo" required></select></div>
+          <div><label>Date</label><input type="date" id="sDate" required></div>
+          <div><label>Class</label><select id="sCls"><option>Economy</option><option>Business</option></select></div>
+          <div><label>Passengers</label><input type="number" id="sPax" min="1" max="6" value="1" required></div>
+          <div style="flex:0 0 auto"><button class="btn">Search</button></div>
+        </div>
+      </form>
+    </div>
+    <div id="results"></div>
+  </section>
+
+  <!-- BOOKING STATUS PAGE -->
+  <section class="view hidden" id="v-status">
+    <div class="card narrow"><h2>View booking status</h2>
+      <form id="statusForm"><div><label>Booking reference (e.g. SW123456)</label><input id="refNo" required></div><button class="btn">Check</button></form>
+      <div id="statusResult" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <!-- LOGIN PAGE -->
+  <section class="view hidden" id="v-login">
+    <div class="card narrow"><h2>Login (Administrator / User)</h2>
+      <form id="loginForm">
+        <div><label>Email</label><input type="email" id="lEmail" required></div>
+        <div><label>Password</label><input type="password" id="lPass" required></div>
+        <button class="btn">Login</button>
+        <p class="mut"><a href="#" data-go="forgot">Forgot password?</a> · <a href="#" data-go="register">Create account</a></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- FORGOT PASSWORD PAGE -->
+  <section class="view hidden" id="v-forgot">
+    <div class="card narrow"><h2>Forgot password</h2>
+      <form id="forgotForm">
+        <div><label>Registered email</label><input type="email" id="fEmail" required></div>
+        <div><label>Registered phone</label><input id="fPhone" required></div>
+        <div><label>New password</label><input type="password" id="fPass" minlength="6" required></div>
+        <button class="btn">Reset password</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section class="view hidden" id="v-register">
+    <div class="card narrow"><h2>Register</h2>
+      <form id="regForm">
+        <div><label>Full name</label><input id="rName" required></div>
+        <div><label>Email</label><input type="email" id="rEmail" required></div>
+        <div><label>Phone</label><input id="rPhone" pattern="[0-9]{10}" required></div>
+        <div><label>Password (min 6)</label><input type="password" id="rPass" minlength="6" required></div>
+        <button class="btn">Create account</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- BOOK TICKET PAGE -->
+  <section class="view hidden" id="v-book">
+    <div class="card">
+      <h2>Book ticket</h2>
+      <div class="ticket" id="bookInfo"></div>
+      <p class="mut" style="text-align:center" id="seatHint"></p>
+      <div class="seats" id="seatMap"></div>
+      <form id="bookForm"><div id="paxList"></div>
+        <div class="row"><div><label>Contact email</label><input type="email" id="bEmail" required></div><div><label>Contact phone</label><input id="bPhone" pattern="[0-9]{10}" required></div></div>
+        <button class="btn">Proceed to payment</button> <button type="button" class="btn sec" data-go="home">Back</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- TICKET PAYMENT PAGE -->
+  <section class="view hidden" id="v-pay">
+    <div class="card narrow"><h2>Ticket payment</h2>
+      <div class="ticket" id="paySummary"></div>
+      <form id="payForm">
+        <div><label>Name on card</label><input id="pName" required></div>
+        <div><label>Card number (16 digits)</label><input id="pCard" pattern="[0-9]{16}" maxlength="16" required></div>
+        <div class="row"><div><label>Expiry (MM/YY)</label><input id="pExp" pattern="(0[1-9]|1[0-2])/[0-9]{2}" placeholder="09/28" required></div><div><label>CVV</label><input id="pCvv" pattern="[0-9]{3}" maxlength="3" required></div></div>
+        <button class="btn green">Pay now</button> <button type="button" class="btn sec" data-go="book">Back</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- USER -->
+  <section class="view hidden" id="v-user">
+    <h2>Hello, <span id="uName"></span></h2>
+    <div class="tabs"><button data-tab="u-tix" class="active">My Ticket</button><button data-tab="u-fb">Customer Feedback</button></div>
+    <div class="tab" id="u-tix"><div id="userTickets"></div></div>
+    <div class="tab hidden" id="u-fb"><div class="card narrow"><form id="fbForm">
+      <div><label>Rating</label><select id="fbRate"><option value="5">★★★★★ Excellent</option><option value="4">★★★★ Good</option><option value="3">★★★ Average</option><option value="2">★★ Poor</option><option value="1">★ Very poor</option></select></div>
+      <div><label>Your feedback</label><textarea id="fbText" required></textarea></div><button class="btn">Submit feedback</button></form></div></div>
+  </section>
+
+  <!-- ADMIN -->
+  <section class="view hidden" id="v-admin">
+    <h2>Admin panel</h2>
+    <div class="tabs"><button data-tab="a-fl" class="active">Flights</button><button data-tab="a-bk">Bookings</button><button data-tab="a-us">Users</button><button data-tab="a-fb">Feedback</button><button data-tab="a-rep">Admin Report</button></div>
+    <div class="tab" id="a-fl">
+      <div class="card"><h3 id="flTitle">Add flight</h3>
+        <form id="flForm"><input type="hidden" id="fId">
+          <div class="row"><div><label>Flight no.</label><input id="fNo" required></div><div><label>Airline</label><input id="fAir" required></div><div><label>From</label><input id="fFrom" required></div><div><label>To</label><input id="fTo" required></div></div>
+          <div class="row"><div><label>Departure</label><input type="time" id="fDep" required></div><div><label>Arrival</label><input type="time" id="fArr" required></div>
+            <div><label>Economy seats</label><input type="number" id="fEs" min="0" value="30" required></div><div><label>Business seats</label><input type="number" id="fBs" min="0" value="8" required></div>
+            <div><label>Economy fare ₹</label><input type="number" id="fEp" min="0" value="4500" required></div><div><label>Business fare ₹</label><input type="number" id="fBp" min="0" value="12000" required></div></div>
+          <button class="btn">Save flight</button> <button type="button" class="btn sec" id="flClear">Clear</button>
+        </form></div>
+      <div class="card table-wrap"><table><thead><tr><th>Flight</th><th>Route</th><th>Time</th><th>Seats E/B</th><th>Fare E/B</th><th></th></tr></thead><tbody id="adminFlights"></tbody></table></div>
+    </div>
+    <div class="tab hidden" id="a-bk"><div class="card table-wrap"><table><thead><tr><th>Ref</th><th>User</th><th>Flight</th><th>Date</th><th>Class/Seats</th><th>Amount</th><th>Status</th></tr></thead><tbody id="adminBookings"></tbody></table></div></div>
+    <div class="tab hidden" id="a-us"><div class="card table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th></th></tr></thead><tbody id="adminUsers"></tbody></table></div></div>
+    <div class="tab hidden" id="a-fb"><div class="card table-wrap"><table><thead><tr><th>User</th><th>Rating</th><th>Feedback</th><th>Date</th></tr></thead><tbody id="adminFb"></tbody></table></div></div>
+    <div class="tab hidden" id="a-rep"><div class="grid" id="repStats"></div><br><div class="card table-wrap"><h3>Flight-wise report</h3><table><thead><tr><th>Flight</th><th>Bookings</th><th>Passengers</th><th>Revenue</th></tr></thead><tbody id="repTable"></tbody></table><br><button class="btn noprint" onclick="window.print()">Print report</button></div></div>
+  </section>
+</main>
+
+<dialog id="dlg"><div id="dlgBody"></div><form method="dialog" style="margin-top:12px"><button class="btn sec">Close</button></form></dialog>
+<div id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>

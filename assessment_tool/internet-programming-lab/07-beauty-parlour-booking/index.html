@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GlamBook - Beauty Parlour Appointment Booking</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>💇‍♀️ GlamBook</h1>
+  <nav>
+    <button data-go="home" data-for="guest,user,admin">Find Parlours</button>
+    <button data-go="login" data-for="guest">Login</button>
+    <button data-go="register" data-for="guest">Register</button>
+    <button data-go="dash" data-for="user,admin">My Account</button>
+    <button id="logout" data-for="user,admin">Logout</button>
+  </nav>
+</header>
+
+<main>
+  <!-- HOME: SEARCH PARLOURS -->
+  <section class="view" id="v-home">
+    <div class="hero"><h2>Book your beauty appointment</h2><p>Demo logins: <b>admin@glam.com / admin123</b> (salon manager) · <b>user@glam.com / user123</b> (customer)</p></div>
+    <div class="card"><label>Search parlour by name or area</label><input id="pq" placeholder="e.g. Anna Nagar, Bridal, Glow..."></div>
+    <div class="grid" id="parlourGrid"></div>
+  </section>
+
+  <!-- LOGIN -->
+  <section class="view hidden" id="v-login">
+    <div class="card narrow"><h2>Login</h2>
+      <form id="loginForm">
+        <div><label>Email</label><input type="email" id="lEmail" required></div>
+        <div><label>Password</label><input type="password" id="lPass" required></div>
+        <button class="btn">Login</button>
+        <p class="mut">New customer? <a href="#" data-go="register">Register</a></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section class="view hidden" id="v-register">
+    <div class="card narrow"><h2>Register</h2>
+      <form id="regForm">
+        <div><label>Full name</label><input id="rName" required></div>
+        <div><label>Email</label><input type="email" id="rEmail" required></div>
+        <div><label>Phone</label><input id="rPhone" pattern="[0-9]{10}" required></div>
+        <div><label>Password (min 6)</label><input type="password" id="rPass" minlength="6" required></div>
+        <button class="btn">Create account</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- BOOK -->
+  <section class="view hidden" id="v-book">
+    <div class="card">
+      <h2 id="bTitle"></h2><p class="mut" id="bSub"></p>
+      <h3 style="margin-top:12px">Our stylists</h3><div class="grid" id="stylistCards" style="margin-bottom:14px"></div>
+      <form id="bookForm">
+        <div class="row">
+          <div><label>Service</label><select id="bService" required></select></div>
+          <div><label>Stylist</label><select id="bStylist" required></select></div>
+          <div><label>Date</label><input type="date" id="bDate" required></div>
+        </div>
+        <label>Choose time (greyed out = unavailable)</label><div class="slots" id="bSlots"></div><br>
+        <div class="row">
+          <div><label>Your name</label><input id="bName" required></div>
+          <div><label>Phone</label><input id="bPhone" pattern="[0-9]{10}" required></div>
+        </div>
+        <div class="card" style="background:#faf5ff">
+          <h3>Payment</h3><p class="mut" id="payPolicy"></p>
+          <p><label style="display:inline"><input type="radio" name="payOpt" value="now" checked style="width:auto"> Pay now</label> &nbsp;
+             <label style="display:inline"><input type="radio" name="payOpt" value="later" style="width:auto"> Pay later</label></p>
+          <div class="row" id="gwBox"><div><label>Gateway</label><select id="bGw"><option>Stripe</option><option>PayPal</option></select></div><div><label>Card / PayPal email</label><input id="bPayRef" placeholder="4242 4242 4242 4242 or you@mail.com"></div></div>
+          <p><b>Service price: <span id="bPrice">₹0</span> · Due now: <span class="price" id="bDue">₹0</span></b></p>
+        </div>
+        <button class="btn">Confirm reservation</button> <button type="button" class="btn sec" data-go="home">Back</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- CUSTOMER ACCOUNT -->
+  <section class="view hidden" id="v-user">
+    <h2>Hello, <span id="uName"></span></h2>
+    <div class="tabs"><button data-tab="u-up" class="active">Upcoming reservations</button><button data-tab="u-hist">Reservations history</button><button data-tab="u-prof">Personal data</button></div>
+    <div class="tab" id="u-up"><div class="card table-wrap"><table><thead><tr><th>Parlour</th><th>Service</th><th>Stylist</th><th>When</th><th>Payment</th><th>Action</th></tr></thead><tbody id="upList"></tbody></table></div></div>
+    <div class="tab hidden" id="u-hist"><div class="card table-wrap"><table><thead><tr><th>Parlour</th><th>Service</th><th>When</th><th>Status</th><th>Feedback</th></tr></thead><tbody id="histList"></tbody></table></div></div>
+    <div class="tab hidden" id="u-prof"><div class="card narrow"><form id="profForm">
+      <div><label>Name</label><input id="pName" required></div><div><label>Email</label><input id="pEmail" disabled></div>
+      <div><label>Phone</label><input id="pPhone" pattern="[0-9]{10}" required></div><div><label>New password (optional)</label><input type="password" id="pPass" minlength="6"></div>
+      <button class="btn">Save</button></form></div></div>
+  </section>
+
+  <!-- SALON MANAGER -->
+  <section class="view hidden" id="v-admin">
+    <h2>Salon manager panel</h2>
+    <div class="card row"><div><label>Managing parlour</label><select id="admP"></select></div></div>
+    <div class="tabs"><button data-tab="a-cal" class="active">Reservations calendar</button><button data-tab="a-up">Upcoming reservations</button><button data-tab="a-svc">Services</button><button data-tab="a-sty">Stylists</button><button data-tab="a-set">Payments &amp; rules</button><button data-tab="a-fb">Feedback</button></div>
+
+    <div class="tab" id="a-cal">
+      <div class="card">
+        <div class="row" style="align-items:center"><div style="flex:0 0 auto"><button class="btn sm sec" id="calPrev">◀</button> <b id="calTitle" style="display:inline-block;min-width:150px;text-align:center"></b> <button class="btn sm sec" id="calNext">▶</button></div></div>
+        <table class="cal"><thead><tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr></thead><tbody id="calBody"></tbody></table>
+      </div>
+      <div class="card" id="dayPanel"></div>
+    </div>
+
+    <div class="tab hidden" id="a-up"><div class="card"><button class="btn" data-act="addRes">+ Add reservation</button></div>
+      <div class="card table-wrap"><table><thead><tr><th>Customer</th><th>Service / stylist</th><th>When</th><th>Payment</th><th>Action</th></tr></thead><tbody id="upAdmin"></tbody></table></div></div>
+
+    <div class="tab hidden" id="a-svc">
+      <div class="card"><form id="svcForm" class="row"><div><label>Service</label><input id="svName" required></div><div><label>Price ₹</label><input type="number" id="svPrice" min="1" required></div><div style="flex:0 0 auto"><button class="btn">Add service</button></div></form></div>
+      <div class="card table-wrap"><table><thead><tr><th>Service</th><th>Price</th><th></th></tr></thead><tbody id="svcList"></tbody></table></div></div>
+
+    <div class="tab hidden" id="a-sty">
+      <div class="card"><form id="styForm" class="row"><div><label>Stylist name</label><input id="syName" required></div><div><label>Speciality</label><input id="syRole" required></div><div><label>Experience (yrs)</label><input type="number" id="syExp" min="0" value="3"></div><div style="flex:0 0 auto"><button class="btn">Add stylist</button></div></form></div>
+      <div class="card table-wrap"><table><thead><tr><th>Name</th><th>Speciality</th><th>Experience</th><th></th></tr></thead><tbody id="styList"></tbody></table></div></div>
+
+    <div class="tab hidden" id="a-set"><div class="card narrow"><form id="setForm">
+      <div><label>Online payment requirement</label><select id="stPolicy"><option value="none">Optional - pay at salon allowed</option><option value="deposit">Require partial deposit</option><option value="full">Require full payment</option></select></div>
+      <div><label>Deposit % (when deposit required)</label><input type="number" id="stDep" min="5" max="90" value="30"></div>
+      <div><label>Auto-cancel unpaid reservations after (minutes)</label><input type="number" id="stAuto" min="1" max="1440" value="15"></div>
+      <p class="mut">Customers can pay with Stripe or PayPal (demo gateway).</p><button class="btn">Save settings</button></form></div></div>
+
+    <div class="tab hidden" id="a-fb"><div class="card table-wrap"><table><thead><tr><th>Customer</th><th>Service</th><th>Rating</th><th>Feedback</th></tr></thead><tbody id="fbList"></tbody></table></div></div>
+  </section>
+</main>
+
+<dialog id="dlg"><div id="dlgBody"></div><form method="dialog" style="margin-top:12px"><button class="btn sec">Close</button></form></dialog>
+<div id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>
