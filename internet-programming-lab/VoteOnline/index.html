@@ -1,0 +1,20 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>VoteOnline - Login</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css"></head><body>
+<header><h1>🗳️ VoteOnline</h1></header>
+<div class="card login" id="voterBox"><h2>Voter Login</h2>
+ <div id="s1"><label>Voter ID</label><input id="vid" placeholder="e.g. V001"><button onclick="sendOtp()">Send OTP</button></div>
+ <div id="s2" hidden><label>Enter OTP</label><input id="otp" maxlength="6"><button class="green" onclick="verify()">Verify &amp; Login</button></div>
+ <p class="muted">Demo voter IDs: V001, V002 (OTP is shown in a popup)</p>
+ <a href="#" onclick="toggle(true)">Admin login</a></div>
+<div class="card login" id="adminBox" hidden><h2>Admin Login</h2>
+ <label>Username</label><input id="au" value="admin"><label>Password</label><input id="ap" type="password" placeholder="admin123">
+ <button onclick="adminLogin()">Login</button><p><a href="#" onclick="toggle(false)">Voter login</a></p></div>
+<script src="common.js"></script><script>
+let pend=null;
+function toggle(a){$('#adminBox').hidden=!a;$('#voterBox').hidden=a}
+function sendOtp(){const id=$('#vid').value.trim().toUpperCase();
+ const v=DB.get('voters').find(x=>x.voterId===id);if(!v)return alert('Voter ID not found');
+ pend={id,otp:genOTP()};alert('Your login OTP is '+pend.otp+' (demo SMS)');$('#s1').hidden=true;$('#s2').hidden=false}
+function verify(){if(pend&&$('#otp').value.trim()===pend.otp){sessionStorage.setItem('voter',pend.id);location.href='voter.html'}else alert('Wrong OTP')}
+function adminLogin(){if($('#au').value==='admin'&&$('#ap').value==='admin123'){sessionStorage.setItem('admin','1');location.href='admin.html'}else alert('Invalid credentials')}
+</script></body></html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>VoteOnline - Admin</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css"></head><body>
+<header><h1>🗳️ VoteOnline Admin</h1><button onclick="logout()">Logout</button></header>
+<nav><button data-t="cand">Candidates</button><button data-t="elec">Elections</button><button data-t="ward">Allocate Wards</button>
+<button data-t="voters">Voter List</button><button data-t="res">Results</button></nav>
+<main>
+<section class="pane" id="cand"><div class="card"><h3>Create Election Candidate</h3>
+ <label>Name</label><input id="cn"><label>Party</label><input id="cp"><label>Info</label><textarea id="ci" rows="2"></textarea>
+ <button onclick="addCand()">Add Candidate</button></div><div class="card" id="candList"></div></section>
+<section class="pane" id="elec"><div class="card"><h3>Create Election</h3>
+ <label>Election Name</label><input id="en"><label>Ward</label><input id="ew" placeholder="Ward 1"><button onclick="addElec()">Create</button></div>
+ <div class="card"><h3>Allocate Candidates to Election</h3><label>Election</label><select id="ae" onchange="renderAlloc()"></select>
+ <div id="allocBox"></div><button class="green" onclick="saveAlloc()">Save Allocation</button></div>
+ <div class="card" id="elecList"></div></section>
+<section class="pane" id="ward"><div class="card"><h3>Allocate Voter to Election Ward</h3>
+ <label>Voter</label><select id="wv"></select><label>Ward</label><input id="ww" placeholder="Ward 2"><button onclick="setWard()">Allocate</button></div></section>
+<section class="pane" id="voters"><div class="card"><h3>Create Voter</h3>
+ <label>Voter ID</label><input id="vi"><label>Name</label><input id="vn"><label>Ward</label><input id="vw"><button onclick="addVoter()">Add Voter</button></div>
+ <div class="card"><h3>Import Voter List (CSV: voterId,name,ward)</h3><input type="file" id="csvf" accept=".csv,.txt"><textarea id="csvt" rows="4" placeholder="V010,Karthik,Ward 1"></textarea><button onclick="importCsv()">Import</button></div>
+ <div class="card" id="voterList"></div></section>
+<section class="pane" id="res"></section>
+</main><script src="common.js"></script><script src="admin.js"></script></body></html>

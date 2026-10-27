@@ -1,0 +1,16 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>AgriMart - Farmer</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css"></head><body>
+<header><h1>🌾 AgriMart – Farmer</h1><div><span id="who"></span> <button onclick="logout()">Logout</button></div></header>
+<nav><button data-t="orders">Manage Orders</button><button data-t="prods">Products</button><button data-t="ship">Shipping Status</button><button data-t="sales">My Sales</button></nav>
+<main>
+<section class="pane" id="orders"></section>
+<section class="pane" id="prods"><div class="card"><h3 id="pf">Add Product</h3><input type="hidden" id="pid">
+ <div class="row"><div><label>Name</label><input id="pn"></div><div><label>Category</label><select id="pc"></select></div></div>
+ <div class="row"><div><label>Price (₹)</label><input id="pp" type="number" min="0"></div><div><label>Stock</label><input id="ps" type="number" min="0"></div></div>
+ <label>Description</label><textarea id="pd" rows="2"></textarea>
+ <label>Product Image</label><input type="file" id="pi" accept="image/*"><img id="prev" class="thumb" hidden>
+ <button onclick="saveProd()">Save Product</button> <button class="alt" onclick="resetForm()">Clear</button></div>
+ <div class="card" id="plist"></div></section>
+<section class="pane" id="ship"></section>
+<section class="pane" id="sales"></section>
+</main><script src="common.js"></script><script src="farmer.js"></script></body></html>

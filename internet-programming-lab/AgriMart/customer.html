@@ -1,0 +1,11 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>AgriMart - Shop</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css"></head><body>
+<header><h1>🌾 AgriMart</h1><div><span id="who"></span> <button onclick="logout()">Logout</button></div></header>
+<nav><button data-t="shop">Shop</button><button data-t="cart">Cart <span id="cc"></span></button><button data-t="myorders">My Orders</button><button data-t="acct">My Account</button></nav>
+<main>
+<section class="pane" id="shop"><div class="card row"><div><input id="q" placeholder="🔍 Search products..." oninput="rShop()"></div>
+ <div><select id="cf" onchange="rShop()"></select></div></div><div id="reco"></div><div id="detail"></div><div class="grid" id="pgrid"></div></section>
+<section class="pane" id="cart"></section>
+<section class="pane" id="myorders"></section>
+<section class="pane" id="acct"></section>
+</main><script src="common.js"></script><script src="customer.js"></script></body></html>

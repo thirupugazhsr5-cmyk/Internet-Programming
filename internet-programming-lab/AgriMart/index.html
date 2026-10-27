@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>AgriMart</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css"></head><body>
+<header><h1>🌾 AgriMart</h1></header>
+<div class="card login">
+ <div id="authBox">
+  <h2 id="ttl">Login</h2>
+  <div id="regFields" hidden><label>Full Name</label><input id="name"><label>Register as</label>
+   <select id="role"><option value="customer">Public / Customer</option><option value="farmer">Farmer</option></select></div>
+  <label>Mobile Number</label><input id="mobile" maxlength="10"><label>Password</label><input id="pass" type="password">
+  <button onclick="submitAuth()" id="authBtn">Login</button>
+  <p><a href="#" id="sw" onclick="switchMode()">New user? Register</a></p>
+  <p class="muted">Demo: Farmer 9999999999 / farmer123 · Customer 8888888888 / cust123</p>
+ </div>
+ <div id="otpBox" hidden><h2>OTP Verification</h2><label>Enter OTP sent to your mobile</label><input id="otp" maxlength="6"><button onclick="verifyOtp()">Verify</button></div>
+</div>
+<script src="common.js"></script><script>
+let mode='login',pend=null;
+function switchMode(){mode=mode==='login'?'reg':'login';const r=mode==='reg';
+ $('#regFields').hidden=!r;$('#ttl').textContent=r?'Register':'Login';$('#authBtn').textContent=r?'Register':'Login';
+ $('#sw').textContent=r?'Have an account? Login':'New user? Register'}
+function submitAuth(){const mobile=$('#mobile').value.trim(),pass=$('#pass').value;
+ if(!/^\d{10}$/.test(mobile))return alert('Enter a 10-digit mobile number');if(pass.length<4)return alert('Password must be at least 4 characters');
+ const us=users();
+ if(mode==='reg'){const name=$('#name').value.trim();if(!name)return alert('Enter name');if(us.find(u=>u.mobile===mobile))return alert('Mobile already registered');
+  pend={type:'reg',user:{id:uid(),role:$('#role').value,name,mobile,password:pass,wallet:0,address:null}}}
+ else{const u=us.find(u=>u.mobile===mobile&&u.password===pass);if(!u)return alert('Invalid mobile or password');pend={type:'login',user:u}}
+ pend.otp=genOTP();alert('Your OTP is '+pend.otp+' (demo SMS)');$('#authBox').hidden=true;$('#otpBox').hidden=false}
+function verifyOtp(){if($('#otp').value.trim()!==pend.otp)return alert('Wrong OTP');
+ let u=pend.user;if(pend.type==='reg'){const us=users();us.push(u);saveUsers(us)}
+ sessionStorage.setItem('uid',u.id);location.href=u.role==='farmer'?'farmer.html':'customer.html'}
+</script></body></html>

@@ -1,0 +1,17 @@
+*{box-sizing:border-box}body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:#f2f5f9;color:#222}
+header{background:#1d4e89;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
+header h1{margin:0;font-size:1.3rem}header button{background:#fff;color:#1d4e89}
+nav{display:flex;gap:6px;flex-wrap:wrap;padding:10px 24px;background:#dbe6f3}
+nav button{background:#fff;color:#1d4e89;border:1px solid #1d4e89}nav button.active{background:#1d4e89;color:#fff}
+main{max-width:950px;margin:20px auto;padding:0 16px}
+.card{background:#fff;border-radius:8px;padding:18px;margin-bottom:16px;box-shadow:0 1px 4px #0002}
+.login{max-width:380px;margin:60px auto}
+label{display:block;margin:10px 0 4px;font-weight:600;font-size:.9rem}
+input,select,textarea{width:100%;padding:8px;border:1px solid #bbb;border-radius:5px;font-size:1rem}
+button{padding:8px 14px;border:0;border-radius:5px;background:#1d4e89;color:#fff;cursor:pointer;margin-top:10px;font-size:.95rem}
+button.danger{background:#c0392b}button.green{background:#2e8b57}
+table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #ddd;text-align:left;font-size:.92rem}th{background:#eef2f7}
+.cand{display:block;border:1px solid #ccc;border-radius:6px;padding:10px;margin:8px 0;cursor:pointer}
+.cand input{width:auto;margin-right:8px}.cand small{display:block;color:#666;margin-left:24px}
+.bar{background:#e3e8ef;border-radius:4px;height:18px;margin:3px 0 10px}.bar div{background:#2e8b57;height:100%;border-radius:4px}
+.ok{color:#2e8b57;font-weight:600}.muted{color:#666;font-size:.9rem}a{color:#1d4e89}
